@@ -7,6 +7,7 @@ public class StateMachine : Resource
     private readonly Dictionary<string, BaseState> _states = new Dictionary<string, BaseState>();
 
     private BaseState _currentState;
+    private string _previousKey = string.Empty;
 
     public void InsertState(string key, BaseState state)
     {
@@ -16,7 +17,8 @@ public class StateMachine : Resource
     public void MakeStateInitial(string key)
     {
         _currentState = _states[key];
-        _currentState.Enter();
+        _currentState.Enter(_previousKey);
+        _previousKey = key;
     }
 
     public void Tick(float delta)
@@ -25,6 +27,7 @@ public class StateMachine : Resource
         if (!string.IsNullOrEmpty(key))
         {
             ChangeState(_states[key]);
+            _previousKey = key;
         }
     }
 
@@ -34,6 +37,7 @@ public class StateMachine : Resource
         if (!string.IsNullOrEmpty(key))
         {
             ChangeState(_states[key]);
+            _previousKey = key;
         }
     }
 
@@ -41,6 +45,6 @@ public class StateMachine : Resource
     {
         _currentState.Exit();
         _currentState = newState;
-        _currentState.Enter();
+        _currentState.Enter(_previousKey);
     }
 }

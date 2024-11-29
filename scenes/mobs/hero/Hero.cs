@@ -4,7 +4,7 @@ using System;
 
 public class Hero : MobBody
 {
-    private ResHero _res = new ResHero();
+    private readonly ResHero _res = new ResHero();
 
     private StateMachine _stateMachine = new StateMachine();
 
@@ -14,6 +14,11 @@ public class Hero : MobBody
         InitStateMachine();
     }
 
+    public override void _Process(float delta)
+    {
+        _res.DecreaseInputStrengthAll(delta);
+    }
+
     public override void _PhysicsProcess(float delta)
     {
         _stateMachine.TickPhysics(delta);
@@ -21,14 +26,35 @@ public class Hero : MobBody
 
     private void InitStateMachine()
     {
-        HeroState groundState = new GroundState();
-        groundState.InitState(_res);
-        _stateMachine.InsertState("idling", groundState);
-        _stateMachine.MakeStateInitial("idling");
+        Tuple<string, HeroState>[] states = new Tuple<string, HeroState>[]
+        {
+            new Tuple<string, HeroState>("ground", new GroundState()),
+            new Tuple<string, HeroState>("jumping", new JumpingState()),
+            new Tuple<string, HeroState>("falling", new FallingState()),
+        };
+        foreach (var state in states)
+        {
+            state.Item2.InitState(_res);
+            _stateMachine.InsertState(state.Item1, state.Item2);
+        }
+        _stateMachine.MakeStateInitial("ground");
     }
 
     private void OnInputXChanged(float x)
     {
         _res.MotionX = x;
+    }
+
+    private void OnInputJumpChanged(bool jump)
+    {
+        _res.InputHeldJump = jump;
+        if (jump)
+        {
+            _res.InputStrengthJump = 0.12f;
+        }
+        else
+        {
+            _res.InputStrengthJump = 0f;
+        }
     }
 }

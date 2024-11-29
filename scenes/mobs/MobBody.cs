@@ -10,7 +10,7 @@ public class MobBody : KinematicBody2D
     [Export]
     public float MaxSpeed { get; set; } = 199f;
     [Export]
-    public float Gravity { get; set; } = 600f;
+    public float Gravity { get; set; } = 1668f;
     [Export]
     public float MaxFallSpeed { get; set; } = 1200f;
 
@@ -41,6 +41,11 @@ public class MobBody : KinematicBody2D
     }
 
     public void BodyMoveAndSlide()
+    {
+        Velocity = MoveAndSlide(Velocity, Vector2.Up);
+    }
+
+    public void BodyMoveAndSlideWithSnap()
     {
         Velocity = MoveAndSlideWithSnap(Velocity, Vector2.Down * 10f, Vector2.Up);
     }

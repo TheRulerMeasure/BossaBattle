@@ -3,7 +3,7 @@ using System;
 
 public class BaseState : Resource
 {
-    public virtual void Enter()
+    public virtual void Enter(string prevStateKey)
     {
 
     }
