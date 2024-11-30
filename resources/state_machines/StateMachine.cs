@@ -26,7 +26,7 @@ public class StateMachine : Resource
         string key = _currentState.Tick(delta);
         if (!string.IsNullOrEmpty(key))
         {
-            ChangeState(_states[key]);
+            ChangeState(_states[key], _previousKey);
             _previousKey = key;
         }
     }
@@ -36,15 +36,15 @@ public class StateMachine : Resource
         string key = _currentState.TickPhysics(delta);
         if (!string.IsNullOrEmpty(key))
         {
-            ChangeState(_states[key]);
+            ChangeState(_states[key], _previousKey);
             _previousKey = key;
         }
     }
 
-    private void ChangeState(BaseState newState)
+    private void ChangeState(BaseState newState, string prevKey)
     {
         _currentState.Exit();
         _currentState = newState;
-        _currentState.Enter(_previousKey);
+        _currentState.Enter(prevKey);
     }
 }

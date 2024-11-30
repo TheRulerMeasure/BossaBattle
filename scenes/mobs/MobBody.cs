@@ -3,15 +3,15 @@ using System;
 
 public class MobBody : KinematicBody2D
 {
-    [Export]
-    public float Acceleration { get; set; } = 2597f;
-    [Export]
+    [Export(PropertyHint.Range, "0.2,9999,0.2")]
+    public float Acceleration { get; set; } = 2789f;
+    [Export(PropertyHint.Range, "0.2,9999,0.2")]
     public float Friction { get; set; } = 1121f;
-    [Export]
+    [Export(PropertyHint.Range, "0.2,9999,0.2")]
     public float MaxSpeed { get; set; } = 199f;
-    [Export]
+    [Export(PropertyHint.Range, "0.2,9999,0.2")]
     public float Gravity { get; set; } = 1668f;
-    [Export]
+    [Export(PropertyHint.Range, "0.2,9999,0.2")]
     public float MaxFallSpeed { get; set; } = 1200f;
 
     [Export]
@@ -45,8 +45,18 @@ public class MobBody : KinematicBody2D
         Velocity = MoveAndSlide(Velocity, Vector2.Up);
     }
 
+    public void BodyMoveAndSlide(Vector2 vel)
+    {
+        Velocity = MoveAndSlide(vel, Vector2.Up);
+    }
+
     public void BodyMoveAndSlideWithSnap()
     {
         Velocity = MoveAndSlideWithSnap(Velocity, Vector2.Down * 10f, Vector2.Up);
+    }
+
+    public void BodyMoveAndSlideWithSnap(Vector2 vel)
+    {
+        Velocity = MoveAndSlideWithSnap(vel, Vector2.Down * 10f, Vector2.Up);
     }
 }

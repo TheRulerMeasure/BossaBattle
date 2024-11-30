@@ -19,6 +19,7 @@ namespace BossaBattle.resources.states.hero
                 Res.Body.ApplyMotion(Res.MotionX, delta);
                 Res.Body.ApplyGravity(delta);
                 Res.Body.BodyMoveAndSlide();
+                Res.FacingRight = Res.MotionX > 0.2f;
                 return "falling";
             }
             if (!Res.InputHeldJump)
@@ -33,6 +34,7 @@ namespace BossaBattle.resources.states.hero
                 Res.Body.ApplyMotion(Res.MotionX, delta);
                 Res.Body.Velocity = new Vector2(Res.Body.Velocity.x, -Res.FallingVelocity);
                 Res.Body.BodyMoveAndSlide();
+                Res.FacingRight = Res.MotionX > 0.2f;
                 return "falling";
             }
             if (Mathf.IsZeroApprox(Res.MotionX))
@@ -46,6 +48,11 @@ namespace BossaBattle.resources.states.hero
                 Res.Body.ApplyMotion(Res.MotionX, delta);
                 Res.Body.ApplyGravity(delta);
                 Res.Body.BodyMoveAndSlide();
+                Res.FacingRight = Res.MotionX > 0.2f;
+            }
+            if (Res.WantsAttack1())
+            {
+                return "air_attack_a";
             }
             return string.Empty;
         }

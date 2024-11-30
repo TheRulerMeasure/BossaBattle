@@ -7,6 +7,8 @@ public class MobController : Node
     public delegate void InputXChanged(float x);
     [Signal]
     public delegate void InputJumpChanged(bool jump);
+    [Signal]
+    public delegate void InputAttack1();
 
     [Export]
     public NodePath MobNodePath { get; set; } = "..";
@@ -16,6 +18,7 @@ public class MobController : Node
         Node mob = GetNode(MobNodePath);
         Connect(nameof(InputXChanged), mob, "OnInputXChanged");
         Connect(nameof(InputJumpChanged), mob, "OnInputJumpChanged");
+        Connect(nameof(InputAttack1), mob, "OnInputAttack1");
     }
 
     public override void _Process(float delta)
@@ -29,6 +32,11 @@ public class MobController : Node
         else if (Input.IsActionJustReleased("move_jump"))
         {
             EmitSignal(nameof(InputJumpChanged), false);
+        }
+
+        if (Input.IsActionJustPressed("attack1"))
+        {
+            EmitSignal(nameof(InputAttack1));
         }
     }
 }

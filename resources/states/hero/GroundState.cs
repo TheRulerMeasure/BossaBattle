@@ -25,10 +25,15 @@ namespace BossaBattle.resources.states.hero
                 Res.Body.ApplyMotion(Res.MotionX, delta);
                 Res.Body.ApplyGravity(delta);
                 Res.Body.BodyMoveAndSlideWithSnap();
+                Res.FacingRight = Res.MotionX > 0.2f;
             }
             if (!Res.Body.IsOnFloor())
             {
                 return "falling";
+            }
+            if (Res.WantsAttack1())
+            {
+                return "attack_a";
             }
             return string.Empty;
         }

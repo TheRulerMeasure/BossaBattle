@@ -5,19 +5,26 @@ namespace BossaBattle.resources.states.hero
 {
     public class FallingState : HeroState
     {
-        private float coyoteTime = 0f;
+        private bool _canAttack = false;
+
+        private float _coyoteTime = 0f;
 
         public override void Enter(string prevStateKey)
         {
+            _canAttack = true;
             if (prevStateKey == "ground")
             {
-                coyoteTime = 0.175f;
+                _coyoteTime = 0.175f;
+            }
+            else if (prevStateKey == "air_attack_a" || prevStateKey == "air_attack_b")
+            {
+                _canAttack = false;
             }
         }
 
         public override string TickPhysics(float delta)
         {
-            if (!Mathf.IsZeroApprox(coyoteTime) && Res.WantsJump())
+            if (!Mathf.IsZeroApprox(_coyoteTime) && Res.WantsJump())
             {
                 float y = -Res.JumpForce;
                 Res.Body.Velocity = new Vector2(Res.Body.Velocity.x, y);
@@ -35,18 +42,23 @@ namespace BossaBattle.resources.states.hero
                 Res.Body.ApplyMotion(Res.MotionX, delta);
                 Res.Body.ApplyGravity(delta);
                 Res.Body.BodyMoveAndSlide();
+                Res.FacingRight = Res.MotionX > 0.2f;
             }
             if (Res.Body.IsOnFloor())
             {
                 return "ground";
             }
-            coyoteTime = Mathf.MoveToward(coyoteTime, 0f, delta);
+            if (Res.WantsAttack1() && _canAttack)
+            {
+                return "air_attack_a";
+            }
+            _coyoteTime = Mathf.MoveToward(_coyoteTime, 0f, delta);
             return string.Empty;
         }
 
         public override void Exit()
         {
-            coyoteTime = 0f;
+            _coyoteTime = 0f;
         }
     }
 }
