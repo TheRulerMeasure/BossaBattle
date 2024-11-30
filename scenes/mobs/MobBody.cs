@@ -8,9 +8,9 @@ public class MobBody : KinematicBody2D
     [Export(PropertyHint.Range, "0.2,9999,0.2")]
     public float Friction { get; set; } = 1121f;
     [Export(PropertyHint.Range, "0.2,9999,0.2")]
-    public float MaxSpeed { get; set; } = 199f;
+    public float MaxSpeed { get; set; } = 137f;
     [Export(PropertyHint.Range, "0.2,9999,0.2")]
-    public float Gravity { get; set; } = 1668f;
+    public float Gravity { get; set; } = 1624f;
     [Export(PropertyHint.Range, "0.2,9999,0.2")]
     public float MaxFallSpeed { get; set; } = 1200f;
 

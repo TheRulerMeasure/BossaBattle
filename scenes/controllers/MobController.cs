@@ -23,7 +23,18 @@ public class MobController : Node
 
     public override void _Process(float delta)
     {
-        EmitSignal(nameof(InputXChanged), Input.GetAxis("move_left", "move_right"));
+        if (Input.IsActionPressed("move_right"))
+        {
+            EmitSignal(nameof(InputXChanged), 1f);
+        }
+        else if (Input.IsActionPressed("move_left"))
+        {
+            EmitSignal(nameof(InputXChanged), -1f);
+        }
+        else
+        {
+            EmitSignal(nameof(InputXChanged), 0f);
+        }
 
         if (Input.IsActionJustPressed("move_jump"))
         {

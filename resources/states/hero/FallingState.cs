@@ -20,6 +20,7 @@ namespace BossaBattle.resources.states.hero
             {
                 _canAttack = false;
             }
+            Res.SpriteAnimPlayer.Play("jump");
         }
 
         public override string TickPhysics(float delta)
@@ -31,18 +32,10 @@ namespace BossaBattle.resources.states.hero
                 Res.Body.BodyMoveAndSlide();
                 return "jumping";
             }
-            if (Mathf.IsZeroApprox(Res.MotionX))
+            bool hasMotion = Motioning(delta);
+            if (hasMotion)
             {
-                Res.Body.ApplyFriction(delta);
-                Res.Body.ApplyGravity(delta);
-                Res.Body.BodyMoveAndSlide();
-            }
-            else
-            {
-                Res.Body.ApplyMotion(Res.MotionX, delta);
-                Res.Body.ApplyGravity(delta);
-                Res.Body.BodyMoveAndSlide();
-                Res.FacingRight = Res.MotionX > 0.2f;
+                SetFacingFromMotionX(Res.MotionX);
             }
             if (Res.Body.IsOnFloor())
             {

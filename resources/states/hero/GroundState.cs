@@ -5,27 +5,44 @@ namespace BossaBattle.resources.states.hero
 {
     public class GroundState : HeroState
     {
+        private bool _moving = false;
+
+        public override void Enter(string prevStateKey)
+        {
+            _moving = false;
+            Res.SpriteAnimPlayer.Play("idle");
+        }
+
         public override string TickPhysics(float delta)
         {
             if (Res.WantsJump())
             {
-                float y = -Res.JumpForce;
-                Res.Body.Velocity = new Vector2(Res.Body.Velocity.x, y);
+                if (Mathf.IsZeroApprox(Res.MotionX))
+                {
+                    Res.Body.ApplyFriction(delta);
+                    Res.Body.Velocity = new Vector2(Res.Body.Velocity.x, -Res.JumpForce);
+                    Res.Body.BodyMoveAndSlide();
+                    return "jumping";
+                }
+                Res.Body.ApplyMotion(Res.MotionX, delta);
+                Res.Body.Velocity = new Vector2(Res.Body.Velocity.x, -Res.JumpForce);
                 Res.Body.BodyMoveAndSlide();
                 return "jumping";
             }
-            if (Mathf.IsZeroApprox(Res.MotionX))
+            bool oldMoving = _moving;
+            bool hasMotion = MotioningWithSnap(delta);
+            if (hasMotion)
             {
-                Res.Body.ApplyFriction(delta);
-                Res.Body.ApplyGravity(delta);
-                Res.Body.BodyMoveAndSlideWithSnap();
+                SetFacingFromMotionX(Res.MotionX);
             }
-            else
+            _moving = hasMotion;
+            if (_moving && !oldMoving)
             {
-                Res.Body.ApplyMotion(Res.MotionX, delta);
-                Res.Body.ApplyGravity(delta);
-                Res.Body.BodyMoveAndSlideWithSnap();
-                Res.FacingRight = Res.MotionX > 0.2f;
+                Res.SpriteAnimPlayer.Play("walk");
+            }
+            else if (!_moving && oldMoving)
+            {
+                Res.SpriteAnimPlayer.Play("idle");
             }
             if (!Res.Body.IsOnFloor())
             {

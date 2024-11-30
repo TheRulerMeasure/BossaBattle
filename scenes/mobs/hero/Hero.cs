@@ -1,5 +1,6 @@
 using BossaBattle.resources.states.hero;
 using Godot;
+using GDCollection = Godot.Collections;
 using System;
 
 public class Hero : MobBody
@@ -27,6 +28,8 @@ public class Hero : MobBody
     {
         _res.PackedLightSlash = GD.Load<PackedScene>("res://scenes/projectiles/melee/LightSlash.tscn");
         _res.Body = this;
+        _res.Sprite = GetNode<Sprite>("Sprite");
+        _res.SpriteAnimPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         _res.PhysicalAnimPlayer = GetNode<AnimationPlayer>("PhysicalAnimPlayer");
         InitStateMachine();
     }

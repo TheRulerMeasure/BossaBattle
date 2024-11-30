@@ -6,11 +6,14 @@ public class ResHero : Resource
     public MobBody Body { get; set; }
 
     public AnimationPlayer PhysicalAnimPlayer { get; set; }
+    public AnimationPlayer SpriteAnimPlayer { get; set; }
+
+    public Sprite Sprite { get; set; }
 
     public PackedScene PackedLightSlash { get; set; }
 
-    public float JumpForce { get; set; } = 678f;
-    public float FallingVelocity { get; set; } = 297f;
+    public float JumpForce { get; set; } = 475f;
+    public float FallingVelocity { get; set; } = 211f;
 
     public Vector2 RelVel { get; set; } = Vector2.Zero;
 
@@ -43,12 +46,17 @@ public class ResHero : Resource
         InputStrengthAttack1 = Mathf.MoveToward(InputStrengthAttack1, 0f, delta);
     }
 
+    public void SpriteFlip(bool flip)
+    {
+        Sprite.FlipH = flip;
+    }
+
     public void SlashARight(Vector2 pos)
     {
         LightSlash slash = PackedLightSlash.Instance<LightSlash>();
         slash.FacingRight = true;
         slash.SlashType = 0;
-        slash.Position = pos + new Vector2(16, -32);
+        slash.Position = pos + new Vector2(16, -22);
         Body.GetParent().AddChild(slash);
     }
 
@@ -57,7 +65,7 @@ public class ResHero : Resource
         LightSlash slash = PackedLightSlash.Instance<LightSlash>();
         slash.FacingRight = false;
         slash.SlashType = 0;
-        slash.Position = pos + new Vector2(-16, -32);
+        slash.Position = pos + new Vector2(-16, -22);
         Body.GetParent().AddChild(slash);
     }
 
@@ -66,7 +74,7 @@ public class ResHero : Resource
         LightSlash slash = PackedLightSlash.Instance<LightSlash>();
         slash.FacingRight = true;
         slash.SlashType = 1;
-        slash.Position = pos + new Vector2(16, -32);
+        slash.Position = pos + new Vector2(16, -22);
         Body.GetParent().AddChild(slash);
     }
 
@@ -75,7 +83,7 @@ public class ResHero : Resource
         LightSlash slash = PackedLightSlash.Instance<LightSlash>();
         slash.FacingRight = false;
         slash.SlashType = 1;
-        slash.Position = pos + new Vector2(-16, -32);
+        slash.Position = pos + new Vector2(-16, -22);
         Body.GetParent().AddChild(slash);
     }
 }

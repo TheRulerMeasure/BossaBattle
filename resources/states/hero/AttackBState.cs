@@ -12,6 +12,7 @@ namespace BossaBattle.resources.states.hero
         public override void Enter(string prevStateKey)
         {
             Res.PhysicalAnimPlayer.Play("attack2");
+            Res.SpriteAnimPlayer.Play("attack");
             if (Res.FacingRight)
             {
                 Res.SlashBRight(Res.Body.Position);
