@@ -53,19 +53,33 @@ public class ResHero : Resource
 
     public void SlashARight(Vector2 pos)
     {
+        var damageInfo = new DamageInfo
+        {
+            Inflictor = Body,
+            Damage = 1,
+            ForceImpulse = Vector2.Right.Rotated(Mathf.Pi * -0.25f) * 221f,
+        };
         LightSlash slash = PackedLightSlash.Instance<LightSlash>();
         slash.FacingRight = true;
         slash.SlashType = 0;
         slash.Position = pos + new Vector2(16, -22);
+        slash.DamageInfo = damageInfo;
         Body.GetParent().AddChild(slash);
     }
 
     public void SlashALeft(Vector2 pos)
     {
+        var damageInfo = new DamageInfo
+        {
+            Inflictor = Body,
+            Damage = 1,
+            ForceImpulse = Vector2.Right.Rotated(Mathf.Pi * -0.75f) * 221f,
+        };
         LightSlash slash = PackedLightSlash.Instance<LightSlash>();
         slash.FacingRight = false;
         slash.SlashType = 0;
         slash.Position = pos + new Vector2(-16, -22);
+        slash.DamageInfo = damageInfo;
         Body.GetParent().AddChild(slash);
     }
 
@@ -75,6 +89,7 @@ public class ResHero : Resource
         slash.FacingRight = true;
         slash.SlashType = 1;
         slash.Position = pos + new Vector2(16, -22);
+        slash.ConnectInflictor(Body);
         Body.GetParent().AddChild(slash);
     }
 
@@ -84,6 +99,7 @@ public class ResHero : Resource
         slash.FacingRight = false;
         slash.SlashType = 1;
         slash.Position = pos + new Vector2(-16, -22);
+        slash.ConnectInflictor(Body);
         Body.GetParent().AddChild(slash);
     }
 }

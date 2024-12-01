@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/textures/effects/melee/light_slash.png" type="Texture" id=1]
+[ext_resource path="res://scenes/controllers/AreaHurtbox.cs" type="Script" id=2]
 [ext_resource path="res://scenes/projectiles/melee/LightSlash.cs" type="Script" id=3]
 
 [sub_resource type="RectangleShape2D" id=4]
@@ -44,7 +45,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.04, 0.08 ),
+"times": PoolRealArray( 0, 0.02, 0.08 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ true, false, true ]
@@ -73,7 +74,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.04, 0.08 ),
+"times": PoolRealArray( 0, 0.02, 0.08 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ true, false, true ]
@@ -100,6 +101,10 @@ texture = ExtResource( 1 )
 hframes = 8
 
 [node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+monitorable = false
+script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 4 )

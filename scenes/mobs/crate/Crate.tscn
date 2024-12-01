@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://assets/textures/mobs/crate/crate_sheet.png" type="Texture" id=1]
+[ext_resource path="res://scenes/mobs/crate/Crate.cs" type="Script" id=2]
+[ext_resource path="res://resources/shaders/fill_tint.gdshader" type="Shader" id=3]
+[ext_resource path="res://scenes/controllers/AreaHitbox.cs" type="Script" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 12, 10 )
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/fill_color = Color( 1, 1, 1, 1 )
+shader_param/amount = 0.0
+
+[sub_resource type="RectangleShape2D" id=3]
+
+[node name="Crate" type="KinematicBody2D"]
+z_index = -50
+collision_layer = 4
+collision_mask = 2
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 2 )
+scale = Vector2( 0.8, 0.8 )
+texture = ExtResource( 1 )
+offset = Vector2( 0, -12 )
+hframes = 6
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 3 )

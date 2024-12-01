@@ -1,10 +1,12 @@
 using BossaBattle.resources.states.hero;
 using Godot;
-using GDCollection = Godot.Collections;
 using System;
 
 public class Hero : MobBody
 {
+    [Signal]
+    public delegate void InflictedOtherMob(DamageInfo damageInfo);
+
     private Vector2 _relVel = Vector2.Zero;
 
     [Export]
@@ -85,5 +87,10 @@ public class Hero : MobBody
     private void OnInputAttack1()
     {
         _res.InputStrengthAttack1 = 0.12f;
+    }
+
+    private void OnInflictedOtherMob(DamageInfo damageInfo)
+    {
+        EmitSignal(nameof(InflictedOtherMob), damageInfo);
     }
 }
