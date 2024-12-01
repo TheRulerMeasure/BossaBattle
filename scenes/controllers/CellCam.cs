@@ -33,11 +33,11 @@ public class CellCam : Camera2D
     {
         _swipeTween.Kill();
         _swipeTween = CreateTween();
-        _swipeTween.TweenProperty(this, "offset", impulseForce, 0.15f)
+        _swipeTween.TweenProperty(this, "offset", impulseForce, 0.11f)
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Expo);
-        _swipeTween.TweenProperty(this, "offset", Vector2.Zero, 0.3f)
-            .SetEase(Tween.EaseType.InOut)
+        _swipeTween.TweenProperty(this, "offset", Vector2.Zero, 0.15f)
+            .SetEase(Tween.EaseType.OutIn)
             .SetTrans(Tween.TransitionType.Quad);
     }
 
@@ -50,6 +50,6 @@ public class CellCam : Camera2D
         }
         Vector2 dir = Vector2.Right * Mathf.Sign(forceImpulse.x);
         dir = dir.Rotated(_rng.Randf() * Mathf.Pi * (_rng.Randf() < 0.5f ? -0.2f : 0.2f));
-        SwipeDirection(dir * (100f + _rng.Randf() * 200f));
+        SwipeDirection(dir * (0.25f + _rng.Randf() * 2f));
     }
 }

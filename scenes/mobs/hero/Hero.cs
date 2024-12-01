@@ -34,16 +34,29 @@ public class Hero : MobBody
         _res.SpriteAnimPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         _res.PhysicalAnimPlayer = GetNode<AnimationPlayer>("PhysicalAnimPlayer");
         InitStateMachine();
+        var area = GetNode<Area2D>("Area2D");
+        area.Connect("area_entered", this, nameof(OnCollectAreaEntered));
+        var hpbar = GetTree().CurrentScene.GetNode("GameInterface/PlayerHP");
+        _res.Connect(nameof(ResHero.HealthChanged), hpbar, "OnPlayerHealthChanged");
     }
 
     public override void _Process(float delta)
     {
         _res.DecreaseInputStrengthAll(delta);
+        if (_res.IsInvincible())
+        {
+            _res.Sprite.Visible = Mathf.Sin(_res.InvincibilityTime * 50f) > 0.1f;
+        }
+        else
+        {
+            _res.Sprite.Show();
+        }
     }
 
     public override void _PhysicsProcess(float delta)
     {
         _stateMachine.TickPhysics(delta);
+        _res.DecreaseInvincibility(delta);
     }
 
     private void InitStateMachine()
@@ -89,8 +102,32 @@ public class Hero : MobBody
         _res.InputStrengthAttack1 = 0.12f;
     }
 
-    private void OnInflictedOtherMob(DamageInfo damageInfo)
+    private void InflictedOtherBody(Node body, DamageInfo damageInfo)
     {
         EmitSignal(nameof(InflictedOtherMob), damageInfo);
+    }
+
+    private void OnCollectAreaEntered(Area2D area)
+    {
+        if (area is AreaCollectable areaCollectable)
+        {
+            areaCollectable.Collect();
+        }
+    }
+
+    private void OnTakenDamage(DamageInfo damageInfo)
+    {
+        if (_res.IsInvincible())
+        {
+            return;
+        }
+        _res.Health -= damageInfo.Damage;
+        if (_res.Health <= 0)
+        {
+            GetTree().ReloadCurrentScene();
+            return;
+        }
+        _res.EmitSignal(nameof(ResHero.HealthChanged), _res.Health);
+        _res.InvincibilityTime = 3.2f;
     }
 }

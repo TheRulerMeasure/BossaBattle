@@ -1,14 +1,20 @@
 using Godot;
-using System;
+using Godot.Collections;
 
 public class Gold : KinematicBody2D
 {
     [Export]
     public Vector2 Velocity { get; set; } = Vector2.Zero;
 
+    private bool _collected = false;
+
     public override void _Ready()
     {
-        
+        var tween = CreateTween();
+        tween.TweenInterval(0.26f);
+        tween.TweenCallback(GetNode("Area2D/CollisionShape2D"), "set_deferred", new Array("disabled", false));
+        var area = GetNode<Area2D>("Area2D");
+        area.Connect("Collected", this, nameof(OnCollected));
     }
 
     public override void _PhysicsProcess(float delta)
@@ -43,5 +49,20 @@ public class Gold : KinematicBody2D
         float y = Velocity.y;
         y += 898f * delta;
         Velocity = new Vector2(Velocity.x, y);
+    }
+
+    private void OnCollected()
+    {
+        if (_collected)
+        {
+            return;
+        }
+        _collected = true;
+        SetPhysicsProcess(false);
+        var tween = CreateTween();
+        tween.TweenProperty(GetNode("Sprite"), "position", Vector2.Up * 46f, 0.5f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Expo);
+        tween.TweenCallback(this, "queue_free");
     }
 }

@@ -7,7 +7,7 @@ public class Crate : MobBody
     public int Health { get; set; } = 5;
 
     [Export(PropertyHint.Range, "0,50")]
-    public int Golds { get; set; } = 6;
+    public int Golds { get; set; } = 0;
 
     private float _hurtTime = 0f;
 
@@ -55,8 +55,8 @@ public class Crate : MobBody
         for (int i = 0; i < Golds; i++)
         {
             Gold gold = _packedGold.Instance<Gold>();
-            gold.Position = Position;
-            float rotation = Mathf.Pi * (0.4f + _rng.Randf() * 0.2f);
+            gold.Position = Position + Vector2.Up * 30f;
+            float rotation = Mathf.Pi * (0.4f + _rng.Randf() * 0.2f) * -1f;
             float force = 200f + _rng.Randf() * 200f;
             gold.Velocity = Vector2.Right.Rotated(rotation) * force;
             GetParent().CallDeferred("add_child", gold);
@@ -66,6 +66,14 @@ public class Crate : MobBody
     private void OnTakenDamage(DamageInfo damageInfo)
     {
         Health -= damageInfo.Damage;
+        Node inflictor = damageInfo.Inflictor;
+        if (IsInstanceValid(inflictor))
+        {
+            if (inflictor.HasMethod("InflictedOtherBody"))
+            {
+                inflictor.Call("InflictedOtherBody", this, damageInfo);
+            }
+        }
         if (Health <= 0)
         {
             SpitGolds();

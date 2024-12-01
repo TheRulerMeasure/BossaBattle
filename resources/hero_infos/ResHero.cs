@@ -3,6 +3,9 @@ using System;
 
 public class ResHero : Resource
 {
+    [Signal]
+    public delegate void HealthChanged(int health);
+
     public MobBody Body { get; set; }
 
     public AnimationPlayer PhysicalAnimPlayer { get; set; }
@@ -11,6 +14,8 @@ public class ResHero : Resource
     public Sprite Sprite { get; set; }
 
     public PackedScene PackedLightSlash { get; set; }
+
+    public int Health { get; set; } = 5;
 
     public float JumpForce { get; set; } = 475f;
     public float FallingVelocity { get; set; } = 211f;
@@ -22,6 +27,8 @@ public class ResHero : Resource
     public float MotionX { get; set; } = 0f;
     public float InputStrengthJump { get; set; } = 0f;
     public float InputStrengthAttack1 { get; set; } = 0f;
+
+    public float InvincibilityTime { get; set; } = 0f;
 
     public bool InputHeldJump { get; set; } = false;
 
@@ -35,6 +42,11 @@ public class ResHero : Resource
         return !Mathf.IsZeroApprox(InputStrengthAttack1);
     }
 
+    public bool IsInvincible()
+    {
+        return !Mathf.IsZeroApprox(InvincibilityTime);
+    }
+
     public Vector2 GetFacingRelVel()
     {
         return RelVel * (FacingRight ? new Vector2(1, 1) : new Vector2(-1, 1));
@@ -46,9 +58,24 @@ public class ResHero : Resource
         InputStrengthAttack1 = Mathf.MoveToward(InputStrengthAttack1, 0f, delta);
     }
 
+    public void DecreaseInvincibility(float delta)
+    {
+        InvincibilityTime = Mathf.MoveToward(InvincibilityTime, 0f, delta);
+    }
+
     public void SpriteFlip(bool flip)
     {
         Sprite.FlipH = flip;
+    }
+
+    public void SlashAttack(Vector2 pos, DamageInfo damageInfo, bool rightSide, int type)
+    {
+        LightSlash slash = PackedLightSlash.Instance<LightSlash>();
+        slash.FacingRight = rightSide;
+        slash.SlashType = type;
+        slash.Position = pos + new Vector2(rightSide ? 16 : -16, -20);
+        slash.DamageInfo = damageInfo;
+        Body.GetParent().AddChild(slash);
     }
 
     public void SlashARight(Vector2 pos)
@@ -59,12 +86,7 @@ public class ResHero : Resource
             Damage = 1,
             ForceImpulse = Vector2.Right.Rotated(Mathf.Pi * -0.25f) * 221f,
         };
-        LightSlash slash = PackedLightSlash.Instance<LightSlash>();
-        slash.FacingRight = true;
-        slash.SlashType = 0;
-        slash.Position = pos + new Vector2(16, -22);
-        slash.DamageInfo = damageInfo;
-        Body.GetParent().AddChild(slash);
+        SlashAttack(pos, damageInfo, true, 0);
     }
 
     public void SlashALeft(Vector2 pos)
@@ -75,31 +97,28 @@ public class ResHero : Resource
             Damage = 1,
             ForceImpulse = Vector2.Right.Rotated(Mathf.Pi * -0.75f) * 221f,
         };
-        LightSlash slash = PackedLightSlash.Instance<LightSlash>();
-        slash.FacingRight = false;
-        slash.SlashType = 0;
-        slash.Position = pos + new Vector2(-16, -22);
-        slash.DamageInfo = damageInfo;
-        Body.GetParent().AddChild(slash);
+        SlashAttack(pos, damageInfo, false, 0);
     }
 
     public void SlashBRight(Vector2 pos)
     {
-        LightSlash slash = PackedLightSlash.Instance<LightSlash>();
-        slash.FacingRight = true;
-        slash.SlashType = 1;
-        slash.Position = pos + new Vector2(16, -22);
-        slash.ConnectInflictor(Body);
-        Body.GetParent().AddChild(slash);
+        var damageInfo = new DamageInfo
+        {
+            Inflictor = Body,
+            Damage = 1,
+            ForceImpulse = Vector2.Right.Rotated(Mathf.Pi * -0.25f) * 221f,
+        };
+        SlashAttack(pos, damageInfo, true, 1);
     }
 
     public void SlashBLeft(Vector2 pos)
     {
-        LightSlash slash = PackedLightSlash.Instance<LightSlash>();
-        slash.FacingRight = false;
-        slash.SlashType = 1;
-        slash.Position = pos + new Vector2(-16, -22);
-        slash.ConnectInflictor(Body);
-        Body.GetParent().AddChild(slash);
+        var damageInfo = new DamageInfo
+        {
+            Inflictor = Body,
+            Damage = 1,
+            ForceImpulse = Vector2.Right.Rotated(Mathf.Pi * -0.75f) * 221f,
+        };
+        SlashAttack(pos, damageInfo, false, 1);
     }
 }
